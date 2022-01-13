@@ -15,24 +15,51 @@ class Ping {
     return File('$path/counter.txt');
   }
 
-  Future<File> writeCounter(int counter) async {
+  Future<File> writeDateInBackground() async {
     final file = await _localFile;
+    print('printing in background');
     // Write the file
-    return file.writeAsString('$counter ', mode: FileMode.append);
+    return file.writeAsString(
+        '${DateTime.now().toIso8601String()} background\n',
+        mode: FileMode.append);
   }
 
-  Future readCounter() async {
+  Future<File> writeDateInForeground() async {
+    final file = await _localFile;
+    // Write the file
+    print('printing in foreground');
+    return file.writeAsString(
+        '${DateTime.now().toIso8601String()} foreground\n',
+        mode: FileMode.append);
+  }
+
+  Future<File> writeAsString(var string) async {
+    final file = await _localFile;
+    // Write the file
+    return file.writeAsString(
+        '$string at ${DateTime.now().toIso8601String()} \n',
+        mode: FileMode.append);
+  }
+
+  Future<String> readCounter() async {
     try {
       final file = await _localFile;
 
       // Read the file
       final contents = await file.readAsString();
-      print('hi');
-      print(contents);
+      return contents;
     } catch (e) {
       // If encountering an error, return 0
-      return 0;
+      return 'error';
     }
+  }
+
+  Future<File> clearCounter() async {
+    final file = await _localFile;
+    // Write the file
+    return file.writeAsString(
+      ' ',
+    );
   }
 
   Future func() async {
